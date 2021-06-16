@@ -11,12 +11,12 @@ class OrderInProgressActivity : AppCompatActivity() {
         setContentView(R.layout.activity_order_in_progress)
 
         val orderID = intent.getStringExtra("order_id")
-        if(orderID != null){
-            var orderStatusLiveData = MainApp.instance.getDataBase().getOrderStatusLiveData(orderID)
-            orderStatusLiveData.observe(this, {
-                // TODO
-            })
-        }
+//        if(orderID != null){
+//            var orderStatusLiveData = MainApp.instance.getDataBase().getOrderStatusLiveData(orderID)
+//            orderStatusLiveData.observe(this, {
+//                // TODO
+//            })
+//        }
 
     }
 }

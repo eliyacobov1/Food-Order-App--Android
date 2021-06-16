@@ -14,7 +14,7 @@
         android:height="100dp"
         app:backgroundTint="@null"
         android:background="@drawable/round_button"
-        android:text="Add new order"
+        android:text="Save Order"
         android:textSize="28sp"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintLeft_toLeftOf="parent"

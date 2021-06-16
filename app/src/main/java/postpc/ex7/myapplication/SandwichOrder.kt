@@ -13,15 +13,17 @@ const val READY: String = "ready"
 const val DONE: String = "done"
 
 class SandwichOrder(id: String?, name: String, numPickles: Int, var comment: String,
-                    var hummus: Boolean, var tahini: Boolean
+                    private var hummus: Boolean, private var tahini: Boolean
 ) {
     private val id: String = id?:UUID.randomUUID().toString()  // generate new id if id argument is null
     private var costumerName: String = name
     private var pickles: Int = numPickles
     private var status = WAITING
     /* getters for all of the class fields */
-    fun getID(): String{ return id }
-    fun getCostumerName(): String{ return costumerName }
-    fun getPickleCount(): Int{ return pickles }
-    fun getStatus(): LiveData<String>{ return MutableLiveData(status) }
+    fun getID(): String { return id }
+    fun getCostumerName(): String { return costumerName }
+    fun getPickleCount(): Int { return pickles }
+    fun getStatus(): String { return status }
+    fun getHummus(): Boolean { return hummus }
+    fun getTahini(): Boolean { return tahini }
 }

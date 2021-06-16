@@ -10,8 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EX7">
-        <activity android:name=".OrderInProgressActivity"></activity>
-        <activity android:name=".AddOrderActivity" />
+        <activity android:name=".OrderDoneActivity"/>
+        <activity android:name=".OrderInProgressActivity" />
+        <activity android:name=".AddAndUpdateOrderActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

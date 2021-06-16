@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "119756402049",
+    "project_id": "rachel-s-order-app",
+    "storage_bucket": "rachel-s-order-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119756402049:android:a665c03722191aef33cc80",
+        "android_client_info": {
+          "package_name": "postpc.ex7.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119756402049-rtmh7cmbvj079mc5qc3fe3t8ddrflgar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvD2YTP9oEK5umEfbQYcw0jDAyZpRxmCA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119756402049-rtmh7cmbvj079mc5qc3fe3t8ddrflgar.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
