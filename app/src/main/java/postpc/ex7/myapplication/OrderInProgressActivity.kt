@@ -2,21 +2,20 @@ package postpc.ex7.myapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.Observer
+import com.google.firebase.firestore.ListenerRegistration
 
 class OrderInProgressActivity : AppCompatActivity() {
-    private lateinit var order: SandwichOrder
+    var orderDocListener: ListenerRegistration? = Utils.setDocListener(
+        this@OrderInProgressActivity, currentStatus=IN_PROGRESS
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_in_progress)
+    }
 
-        val orderID = intent.getStringExtra("order_id")
-//        if(orderID != null){
-//            var orderStatusLiveData = MainApp.instance.getDataBase().getOrderStatusLiveData(orderID)
-//            orderStatusLiveData.observe(this, {
-//                // TODO
-//            })
-//        }
-
+    override fun onDestroy() {
+        super.onDestroy()
+        orderDocListener!!.remove()
     }
 }

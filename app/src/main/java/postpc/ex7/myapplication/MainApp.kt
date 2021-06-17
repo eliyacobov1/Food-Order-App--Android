@@ -8,8 +8,8 @@ class MainApp: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
         FirebaseApp.initializeApp(this)
+        instance = this
         db = OrderDB(this)
     }
 

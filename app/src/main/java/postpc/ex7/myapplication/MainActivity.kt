@@ -1,6 +1,6 @@
 package postpc.ex7.myapplication
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import kotlin.concurrent.schedule
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
@@ -11,15 +11,27 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val currOrder = db.getCurrOrder()
+        val currOrderID = db.getCurrentOrderID()
+
         Timer("SettingUp", false).schedule(2500) {
-            val nextActivityIntent = Intent(this@MainActivity, when{
-                currOrder == null || currOrder.getStatus() == WAITING -> AddAndUpdateOrderActivity::class.java
-                currOrder.getStatus() == IN_PROGRESS -> OrderInProgressActivity::class.java
-                else -> OrderDoneActivity::class.java
-            })
-            startActivity(nextActivityIntent)
-            finish()
+            if (currOrderID != null) { /* if an order was already pending */
+                db.fireStore.collection("orders").document(currOrderID).get()
+                    .addOnSuccessListener {
+                        if (it != null) db.setOrder(it.toObject(SandwichOrder::class.java))
+                        Utils.switchActivity(this@MainActivity, db.getCurrentOrder()?.getStatus())
+                    }
+                    .addOnFailureListener {
+                        db.resetCurrentOrderID()
+                        db.removeOrder() // TODO
+                        Log.d(
+                            "firebase_err",
+                            it.message ?: "failed to retrieve previously created order"
+                        )
+                        Utils.switchActivity(this@MainActivity)
+                    }
+            } else {
+                Utils.switchActivity(this@MainActivity)
+            }
         }
     }
 }

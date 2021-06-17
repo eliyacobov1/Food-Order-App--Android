@@ -1,11 +1,11 @@
 package postpc.ex7.myapplication
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import com.google.firebase.firestore.ListenerRegistration
 
 class AddAndUpdateOrderActivity: AppCompatActivity() {
     private lateinit var nameText : EditText
@@ -16,6 +16,7 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
     private lateinit var hummusSwitch : SwitchCompat
     private lateinit var tahiniSwitch : SwitchCompat
     private lateinit var orderButton: Button
+    var orderDocListener: ListenerRegistration? = null
     private var db = MainApp.getInstance().getDataBase()
 
     private fun getNumPickles(num: Int): Int{
@@ -30,11 +31,10 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
      * set order field according to the last order made by the user
      */
     private fun setFieldByCurrentOrder(){
-        val currentOrder = db.getCurrOrder()
-        Log.d("msg", "$currentOrder")
+        val currentOrder = db.getCurrentOrder()
         if(currentOrder != null) {
             nameText.setText(currentOrder.getCostumerName())
-            pickleCounter.setText(currentOrder.getPickleCount())
+            pickleCounter.text = currentOrder.getPickleCount().toString()
             hummusSwitch.isChecked = currentOrder.getHummus()
             tahiniSwitch.isChecked = currentOrder.getTahini()
         }
@@ -46,7 +46,7 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
     private fun setUpdateOrderHandler() {
         orderButton.setOnClickListener{
             val updatedOrder = SandwichOrder(
-                id= db.getCurrOrder()?.getID(),
+                id= db.getCurrentOrderID(),
                 name= nameText.text.toString(),
                 numPickles= pickleCounter.text.toString().toInt(),
                 hummus= hummusSwitch.isChecked,
@@ -62,7 +62,7 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
         setContentView(R.layout.activity_add_order)
 
         /* find all UI elements */
-        orderButton = findViewById<Button>(R.id.newOrderButton)
+        orderButton = findViewById(R.id.newOrderButton)
         nameText = findViewById(R.id.editName)
         addPickle = findViewById(R.id.buttonAddPickle)
         subtractPickle = findViewById(R.id.buttonSubtractPickle)
@@ -70,6 +70,9 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
         hummusSwitch = findViewById(R.id.hummusSwitch)
         tahiniSwitch = findViewById(R.id.tahiniSwitch)
 //        comment = findViewById<EditText>(R.id.comm)
+
+        /* restore fields of last application run */
+        if(db.getCurrentOrderID() != null) setFieldByCurrentOrder()
 
         /* define on click listeners */
         addPickle.setOnClickListener{
@@ -82,20 +85,35 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
             pickleCounter.text = (getNumPickles(numPickles-1)).toString()
         }
 
-        /* create a new order */
-        orderButton.setOnClickListener {
-            val newOrder = SandwichOrder(
-                id=null,
-                name= nameText.text.toString(),
-                numPickles= pickleCounter.text.toString().toInt(),
-                hummus= hummusSwitch.isChecked,
-                tahini= tahiniSwitch.isChecked,
-                comment=comment?.text?.toString()?:""
-            )
+        if(db.getCurrentOrder() != null){ // if previous order was loaded
             orderButton.text = "Update Order"
-            db.addOrder(newOrder)
+            if(orderDocListener == null) orderDocListener = Utils.setDocListener(
+                this@AddAndUpdateOrderActivity, currentStatus=WAITING
+            )
             setUpdateOrderHandler()
         }
-        setFieldByCurrentOrder()
+        else{
+            /* create a new order */
+            orderButton.setOnClickListener {
+                val newOrder = SandwichOrder(
+                    name= nameText.text.toString(),
+                    numPickles= pickleCounter.text.toString().toInt(),
+                    hummus= hummusSwitch.isChecked,
+                    tahini= tahiniSwitch.isChecked,
+                    comment=comment?.text?.toString()?:""
+                )
+                orderButton.text = "Update Order"
+                db.addOrder(newOrder)
+                if(orderDocListener == null) orderDocListener = Utils.setDocListener(
+                    this@AddAndUpdateOrderActivity, currentStatus=WAITING
+                )
+                setUpdateOrderHandler()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        orderDocListener?.remove()
     }
 }

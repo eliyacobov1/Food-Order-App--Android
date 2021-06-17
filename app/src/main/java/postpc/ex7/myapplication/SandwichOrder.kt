@@ -1,7 +1,6 @@
 package postpc.ex7.myapplication
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.DocumentId
 import java.util.*
 
 /**
@@ -10,17 +9,17 @@ import java.util.*
 const val WAITING: String = "waiting"
 const val IN_PROGRESS: String = "in-progress"
 const val READY: String = "ready"
-const val DONE: String = "done"
 
-class SandwichOrder(id: String?, name: String, numPickles: Int, var comment: String,
-                    private var hummus: Boolean, private var tahini: Boolean
+class SandwichOrder(id: String?=null, name: String="", numPickles: Int=0, var comment: String="",
+                    private var hummus: Boolean=false, private var tahini: Boolean=false
 ) {
-    private val id: String = id?:UUID.randomUUID().toString()  // generate new id if id argument is null
+    @DocumentId
+    private val documentId: String = id?:UUID.randomUUID().toString()  // generate new id if id argument is null
     private var costumerName: String = name
     private var pickles: Int = numPickles
     private var status = WAITING
-    /* getters for all of the class fields */
-    fun getID(): String { return id }
+    /* getters and setters */
+    fun getID(): String { return documentId }
     fun getCostumerName(): String { return costumerName }
     fun getPickleCount(): Int { return pickles }
     fun getStatus(): String { return status }
