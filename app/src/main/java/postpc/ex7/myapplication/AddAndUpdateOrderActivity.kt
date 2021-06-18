@@ -1,5 +1,8 @@
 package postpc.ex7.myapplication
+import android.content.Context
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -28,6 +31,15 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
     }
 
     /**
+     * this method hides the on-screen keyboard
+     */
+    private fun hideSoftKeyboard(view: View) {
+        val imm =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    /**
      * set order field according to the last order made by the user
      */
     private fun setFieldByCurrentOrder(){
@@ -45,6 +57,8 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
      */
     private fun setUpdateOrderHandler() {
         orderButton.setOnClickListener{
+            nameText.clearFocus()
+            hideSoftKeyboard(nameText)
             val updatedOrder = SandwichOrder(
                 id= db.getCurrentOrderID(),
                 name= nameText.text.toString(),
@@ -95,6 +109,8 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
         else{
             /* create a new order */
             orderButton.setOnClickListener {
+                nameText.clearFocus()
+                hideSoftKeyboard(nameText)
                 val newOrder = SandwichOrder(
                     name= nameText.text.toString(),
                     numPickles= pickleCounter.text.toString().toInt(),
