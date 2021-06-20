@@ -5,7 +5,7 @@ import android.os.Bundle
 import com.google.firebase.firestore.ListenerRegistration
 
 class OrderInProgressActivity : AppCompatActivity() {
-    var orderDocListener: ListenerRegistration? = Utils.setDocListener(
+    private var orderDocListener: ListenerRegistration? = Utils.setDocListener(
         this@OrderInProgressActivity, currentStatus=IN_PROGRESS
     )
 

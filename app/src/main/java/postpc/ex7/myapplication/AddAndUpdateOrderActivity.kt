@@ -1,18 +1,20 @@
 package postpc.ex7.myapplication
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.google.firebase.firestore.ListenerRegistration
 
 class AddAndUpdateOrderActivity: AppCompatActivity() {
     private lateinit var nameText : EditText
-    private var comment : EditText? = null
+    private lateinit var comment : EditText
     private lateinit var addPickle : Button
     private lateinit var subtractPickle : Button
     private lateinit var pickleCounter : TextView
@@ -49,6 +51,7 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
             pickleCounter.text = currentOrder.getPickleCount().toString()
             hummusSwitch.isChecked = currentOrder.getHummus()
             tahiniSwitch.isChecked = currentOrder.getTahini()
+            comment.setText(currentOrder.getComment())
         }
     }
 
@@ -58,6 +61,7 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
     private fun setUpdateOrderHandler() {
         orderButton.setOnClickListener{
             nameText.clearFocus()
+            comment.clearFocus()
             hideSoftKeyboard(nameText)
             val updatedOrder = SandwichOrder(
                 id= db.getCurrentOrderID(),
@@ -65,7 +69,7 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
                 numPickles= pickleCounter.text.toString().toInt(),
                 hummus= hummusSwitch.isChecked,
                 tahini= tahiniSwitch.isChecked,
-                comment=comment?.text?.toString()?:""
+                comment=comment.text.toString()
             )
             db.editOrder(updatedOrder)
         }
@@ -83,7 +87,7 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
         pickleCounter = findViewById(R.id.pickleCounter)
         hummusSwitch = findViewById(R.id.hummusSwitch)
         tahiniSwitch = findViewById(R.id.tahiniSwitch)
-//        comment = findViewById<EditText>(R.id.comm)
+        comment = findViewById(R.id.editComment)
 
         /* restore fields of last application run */
         if(db.getCurrentOrderID() != null) setFieldByCurrentOrder()
@@ -93,6 +97,8 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
             val numPickles = pickleCounter.text.toString().toInt()
             pickleCounter.text = (getNumPickles(numPickles+1)).toString()
         }
+
+        if(db.getName() != null) nameText.setText(db.getName())
 
         subtractPickle.setOnClickListener{
             val numPickles = pickleCounter.text.toString().toInt()
@@ -109,21 +115,34 @@ class AddAndUpdateOrderActivity: AppCompatActivity() {
         else{
             /* create a new order */
             orderButton.setOnClickListener {
+                if(nameText.text.toString() == ""){
+                    Toast.makeText(this, "please enter a costumer name",
+                        Toast.LENGTH_LONG).show()
+                }
+
+                if(db.getName() == null) db.addName(nameText.text.toString())
                 nameText.clearFocus()
+                comment.clearFocus()
                 hideSoftKeyboard(nameText)
                 val newOrder = SandwichOrder(
                     name= nameText.text.toString(),
                     numPickles= pickleCounter.text.toString().toInt(),
                     hummus= hummusSwitch.isChecked,
                     tahini= tahiniSwitch.isChecked,
-                    comment=comment?.text?.toString()?:""
+                    comment=comment.text.toString()
                 )
                 orderButton.text = "Update Order"
-                db.addOrder(newOrder)
-                if(orderDocListener == null) orderDocListener = Utils.setDocListener(
-                    this@AddAndUpdateOrderActivity, currentStatus=WAITING
-                )
-                setUpdateOrderHandler()
+                db.fireStore.collection("orders").document(newOrder.getID()).set(newOrder)
+                    .addOnSuccessListener {
+                        db.setOrder(newOrder)
+                        db.setOrderID(newOrder.getID())
+                        db.addOrder(newOrder)
+                        nameText.isEnabled = false
+                        if(orderDocListener == null) orderDocListener = Utils.setDocListener(
+                            this@AddAndUpdateOrderActivity, currentStatus=WAITING
+                        )
+                        setUpdateOrderHandler()
+                    }
             }
         }
     }

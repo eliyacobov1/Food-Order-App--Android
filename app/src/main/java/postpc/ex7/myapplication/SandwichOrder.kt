@@ -9,8 +9,9 @@ import java.util.*
 const val WAITING: String = "waiting"
 const val IN_PROGRESS: String = "in-progress"
 const val READY: String = "ready"
+const val DONE: String = "done"
 
-class SandwichOrder(id: String?=null, name: String="", numPickles: Int=0, var comment: String="",
+class SandwichOrder(id: String?=null, name: String="", numPickles: Int=0, private var comment: String="",
                     private var hummus: Boolean=false, private var tahini: Boolean=false
 ) {
     @DocumentId
@@ -25,4 +26,5 @@ class SandwichOrder(id: String?=null, name: String="", numPickles: Int=0, var co
     fun getStatus(): String { return status }
     fun getHummus(): Boolean { return hummus }
     fun getTahini(): Boolean { return tahini }
+    fun getComment(): String { return comment }
 }

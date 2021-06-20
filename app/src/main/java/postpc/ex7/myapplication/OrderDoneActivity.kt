@@ -16,7 +16,7 @@ class OrderDoneActivity : AppCompatActivity() {
             db.fireStore.collection("orders").document(db.getCurrentOrderID()!!).
             delete().addOnSuccessListener {
                 db.resetCurrentOrderID()
-                Utils.switchActivity(this@OrderDoneActivity, READY)
+                Utils.switchActivity(this@OrderDoneActivity, DONE)
             }
         }
     }

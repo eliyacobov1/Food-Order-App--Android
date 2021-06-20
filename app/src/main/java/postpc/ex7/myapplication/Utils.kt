@@ -15,8 +15,8 @@ class Utils {
             val nextActivityIntent = Intent(context, when(status) {
                 null, WAITING -> AddAndUpdateOrderActivity::class.java
                 IN_PROGRESS -> OrderInProgressActivity::class.java
-                READY -> MainActivity::class.java
-                else -> OrderDoneActivity::class.java
+                READY -> OrderDoneActivity::class.java
+                else -> MainActivity::class.java
             })
             context.startActivity(nextActivityIntent)
             (context as Activity).finish()
@@ -29,6 +29,7 @@ class Utils {
         fun setDocListener(context: Context, currentStatus: String?): ListenerRegistration? {
             val db = MainApp.getInstance().getDataBase()
             val orderID = db.getCurrentOrderID()
+            Log.d("msg_q", "I'm here currID=${orderID}")
             if(orderID != null) {
                 return db.fireStore.collection("orders").document(orderID)
                     .addSnapshotListener { data, error ->

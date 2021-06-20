@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     .addOnFailureListener {
                         db.resetCurrentOrderID()
-                        db.removeOrder() // TODO
+                        db.removeOrder()
                         Log.d(
                             "firebase_err",
                             it.message ?: "failed to retrieve previously created order"
