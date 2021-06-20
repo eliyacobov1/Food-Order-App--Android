@@ -15,6 +15,7 @@ class Utils {
             val nextActivityIntent = Intent(context, when(status) {
                 null, WAITING -> AddAndUpdateOrderActivity::class.java
                 IN_PROGRESS -> OrderInProgressActivity::class.java
+                READY -> MainActivity::class.java
                 else -> OrderDoneActivity::class.java
             })
             context.startActivity(nextActivityIntent)

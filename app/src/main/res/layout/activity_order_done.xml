@@ -4,6 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrderDoneActivity">
+    tools:context=".OrderDoneActivity"
+    android:background="@drawable/yay">
+
+    <TextView
+        android:id="@+id/orderDoneMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="5dp"
+        android:text="Hurray, your order is ready for pick up!"
+        android:textSize="45sp"
+        android:background="#527E6B"
+        android:textColor="@color/white"
+        android:textStyle="italic"
+        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <Button
+        android:id="@+id/orderDoneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:width="300dp"
+        android:height="100dp"
+        app:backgroundTint="@null"
+        android:background="@drawable/round_button"
+        android:text="Got It"
+        android:textSize="28sp"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/orderDoneMessage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

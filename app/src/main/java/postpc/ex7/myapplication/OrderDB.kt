@@ -58,5 +58,6 @@ class OrderDB(context: Context) {
      */
     fun removeOrder() {
         sp.edit().clear().apply()
+        currOrder = null
     }
 }
